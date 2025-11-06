@@ -3,9 +3,9 @@ import React from "react";
 const Footer = () => {
   return (
     <footer className="bg-gray-50 text-gray-700 border-t mt-10">
-      {/* Wrapper to center & control width */}
+     
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-10">
-        {/* Responsive grid */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center md:text-left">
 
           {/* About Section */}

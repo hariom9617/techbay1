@@ -1,214 +1,298 @@
-import React, { useState } from "react";
-import { Icon } from "@mui/material";
+// AddressForm.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
-const AddressForm = ({  addressData, setAddressData, nextStep }) => {
-    console.log(addressData)
-  const [selectedAddress, setSelectedAddress] = useState("John Doe");
+const AddressForm = () => {
+  const navigate = useNavigate();
+  const API = "http://192.168.29.133:5003";
 
-  const savedAddresses = [
-    { name: "John Doe", address: "123 Tech Lane, Silicon Valley, CA, 94043" },
-    { name: "Jane Smith", address: "456 Circuit Board, Austin, TX, 78701" },
-  ];
+  const [formData, setFormData] = useState({
+    fullName: "",
+    mobile: "",
+    alternatemobile: "",
+    address: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    type: "Home",
+  });
 
-  const handleChange = (e) => {
-    setSelectedAddress(e.target.value);
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${API}/viewaddress`, {
+        headers: { "Content-Type": "application/json" },
+      });
+      console.log("API Response:", res.data);
+      setSavedAddresses(res.data.addresses || res.data || []);
+    } catch (err) {
+      console.error("Fetch error:", err.response?.data || err);
+      toast.error(err.response?.data?.message || "Failed to load addresses");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleInputChange = (e) => {
-    setAddressData({ ...addressData, [e.target.id]: e.target.value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleAddressSelect = (addr) => {
+    setSelectedAddress(addr);
+    setIsEditing(true);
+    setFormData({
+      fullName: addr.name || "",
+      mobile: addr.mobile || "",
+      alternatemobile: addr.alternatemobile || "",
+      address: addr.address || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      postalCode: addr.pincode || "",
+      type: addr.type || "Home",
+    });
+  };
+
+  const handleAdd = async () => {
+    if (!formData.fullName || !formData.address || !formData.mobile || !formData.city || !formData.state || !formData.postalCode) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const payload = {
+        name: formData.fullName,
+        mobile: formData.mobile,
+        alternatemobile: formData.alternatemobile,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.postalCode,   // <-- YEH MATCH HONA CHAHIYE
+        type: formData.type,
+      };
+
+      await axios.post(`${API}/addaddress`, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      toast.success("Address added successfully!");
+      resetForm();
+      fetchAddresses();
+    } catch (err) {
+      console.error("Add error:", err.response?.data);
+      toast.error(err.response?.data?.message || "Failed to add address");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedAddress) return;
+
+    setLoading(true);
+    try {
+      const payload = {
+        name: formData.fullName,
+        mobile: formData.mobile,
+        alternatemobile: formData.alternatemobile,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.postalCode,
+        type: formData.type,
+      };
+
+      await axios.put(`${API}/updateaddress/${selectedAddress._id}`, payload, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      toast.success("Address updated!");
+      resetForm();
+      fetchAddresses();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Update failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedAddress || !window.confirm("Delete this address permanently?")) return;
+
+    setLoading(true);
+    try {
+      await axios.delete(`${API}/deleteaddress/${selectedAddress._id}`);
+      toast.success("Address deleted");
+      resetForm();
+      fetchAddresses();
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Delete failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      fullName: "",
+      mobile: "",
+      alternatemobile: "",
+      address: "",
+      city: "",
+      state: "",
+      postalCode: "",
+      type: "Home",
+    });
+    setSelectedAddress(null);
+    setIsEditing(false);
   };
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <nav className="flex justify-center items-center px-4 sm:px-6 lg:px-10 py-4 bg-white shadow-md relative">
-        <div className="flex items-center gap-5 text-2xl font-bold text-gray-800">
-          <svg
-            fill="none"
-            viewBox="0 0 48 48"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-10 h-10 text-blue-500"
-          >
-            <path
-              d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z"
-              fill="currentColor"
-            ></path>
-          </svg>
-          TechBay
+      <Toaster position="top-center" />
+
+      {/* Header */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-6 py-5">
+          <div className="flex justify-center items-center gap-3">
+            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+              <span className="text-white font-bold text-xl">T</span>
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900">Techbay</h1>
           </div>
-          </nav>
-      <div className="flex flex-wrap gap-3 ml-10 p-6">
-        <span className="text-primary text-base font-medium">Shipping</span>
-        <span className="text-text-secondary-light dark:text-text-secondary-dark">/</span>
-        <span className="text-text-secondary-light dark:text-text-secondary-dark">Payment</span>
-        <span className="text-text-secondary-light dark:text-text-secondary-dark">/</span>
-        <span className="text-text-secondary-light dark:text-text-secondary-dark">Review</span>
+        </div>
       </div>
 
-      <h2 className="text-4xl font-black text-text-primary-light dark:text-text-primary-dark pb-8">
-        Shipping Address
-      </h2>
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <p className="text-sm text-blue-600 font-medium">Shipping / Payment / Review</p>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 border">
-        {/* Saved Addresses */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-bold text-text-primary-light dark:text-text-primary-dark px-4">
-            Select a saved address
-          </h3>
-          <div className="flex flex-col gap-3 px-4">
-            {savedAddresses.map((addr) => (
-              <label
-                key={addr.name}
-                className={`flex items-start gap-4 p-4 rounded-lg border ${
-                  selectedAddress === addr.name ? "border-2 border-primary" : "border-border-light dark:border-border-dark"
-                } bg-surface-light dark:bg-surface-dark cursor-pointer`}
-              >
-                <input
-                  type="radio"
-                  name="saved-address"
-                  value={addr.name}
-                  checked={selectedAddress === addr.name}
-                  onChange={handleChange}
-                  className="mt-1 h-5 w-5 rounded-full border-2 border-border-light dark:border-border-dark checked:border-primary checked:bg-primary focus:ring-2 focus:ring-primary/50"
-                />
-                <div className="flex flex-col grow">
-                  <p className="text-sm font-medium text-text-primary-light dark:text-text-primary-dark">{addr.name}</p>
-                  <p className="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">{addr.address}</p>
+      <div className="max-w-7xl mx-auto px-6 pb-20">
+        <h2 className="text-3xl font-bold text-gray-900 mb-8">Shipping Address</h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Select a saved address</h3>
+            {loading ? (
+              <p className="text-gray-500">Loading...</p>
+            ) : savedAddresses.length === 0 ? (
+              <p className="text-gray-500 italic">No saved addresses</p>
+            ) : (
+              <div className="space-y-4">
+                {savedAddresses.map((addr) => (
+                  <div
+                    key={addr._id}
+                    onClick={() => handleAddressSelect(addr)}
+                    className={`p-5 rounded-lg border-2 cursor-pointer transition-all shadow-sm ${
+                      selectedAddress?._id === addr._id
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-300 hover:border-gray-400"
+                    }`}
+                  >
+                    <div className="flex items-start gap-4">
+                      <input
+                        type="radio"
+                        checked={selectedAddress?._id === addr._id}
+                        onChange={() => {}}
+                        className="mt-1 w-5 h-5 text-blue-600"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">{addr.name}</p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {addr.address}, {addr.city}, {addr.state} {addr.pincode}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h3 className="text-lg font-semibold mb-6">Or add a new shipping address</h3>
+            <div className="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input id="fullName" placeholder="Enter your full name" value={formData.fullName} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
-                <button className="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">
-                  <span className="material-symbols-outlined text-xl">edit</span>
-                </button>
-              </label>
-            ))}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
+                  <input id="mobile" placeholder="10-digit mobile number" value={formData.mobile} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 1</label>
+                  <input id="address" placeholder="Street address, P.O. box" value={formData.address} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Address Line 2 (Optional)</label>
+                  <input id="alternatemobile" placeholder="Apartment, suite, unit, building" value={formData.alternatemobile} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <input id="city" value={formData.city} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Postal Code</label>
+                    <input id="postalCode" value={formData.postalCode} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                    <select className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none">
+                      <option>India</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">State / Province</label>
+                    <input id="state" value={formData.state} onChange={handleChange} className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none" />
+                  </div>
+                </div>
+                <label className="flex items-center gap-3">
+                  <input type="checkbox" className="w-5 h-5 text-blue-600 rounded" />
+                  <span className="text-sm text-gray-700">Save this address for future orders</span>
+                </label>
+              </div>
+
+              <div className="mt-8">
+                {!isEditing ? (
+                  <button onClick={handleAdd} disabled={loading} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md disabled:opacity-60">
+                    {loading ? "Adding..." : "Use this address"}
+                  </button>
+                ) : (
+                  <div className="grid grid-cols-3 gap-3">
+                    <button onClick={handleUpdate} disabled={loading} className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-md">Update</button>
+                    <button onClick={handleDelete} disabled={loading} className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-md">Delete</button>
+                    <button onClick={resetForm} className="border-2 border-gray-400 text-gray-700 font-semibold py-3 rounded-md hover:bg-gray-50">Cancel</button>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* New Address Form */}
-        <div className="flex flex-col gap-4">
-          <h3 className="text-lg font-bold text-text-primary-light dark:text-text-primary-dark px-4">
-            Or add a new shipping address
-          </h3>
-          <form className="space-y-4 p-4 bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-xl">
-            <div>
-              <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="fullName">
-                Full Name
-              </label>
-              <input
-                id="Name"
-                placeholder="Enter your full name"
-                type="text"
-                value={addressData?.Name || ""}
-                onChange={handleInputChange}
-                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="address1">
-                Address Line 1
-              </label>
-              <input
-                id="address1"
-                placeholder="Street address, P.O. box"
-                type="text"
-                value={addressData?.address1 || ""}
-                onChange={handleInputChange}
-                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="address2">
-                Address Line 2 <span className="text-xs">(Optional)</span>
-              </label>
-              <input
-                id="address2"
-                placeholder="Apartment, suite, unit, building"
-                type="text"
-                value={addressData?.address2 || ""}
-                onChange={handleInputChange}
-                className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-              />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="city">
-                  City
-                </label>
-                <input
-                  id="city"
-                  type="text"
-                  value={addressData?.city || ""}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="postalCode">
-                  Postal Code
-                </label>
-                <input
-                  id="postalCode"
-                  type="text"
-                  value={addressData?.postalCode || ""}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="country">
-                  Country
-                </label>
-                <select
-                  id="country"
-                  value={addressData?.country || "United States"}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark mb-1" htmlFor="state">
-                  State / Province
-                </label>
-                <input
-                  id="state"
-                  type="text"
-                  value={addressData?.state || ""}
-                  onChange={handleInputChange}
-                  className="w-full rounded-lg border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary focus:ring-primary focus:ring-opacity-50 text-sm"
-                />
-              </div>
-            </div>
-            <div className="flex items-center pt-2">
-              <input
-                id="saveAddress"
-                type="checkbox"
-                checked={addressData?.saveAddress || false}
-                onChange={(e) => setAddressData({ ...addressData, saveAddress: e.target.checked })}
-                className="h-4 w-4 rounded border-border-light dark:border-border-dark text-primary focus:ring-primary"
-              />
-              <label htmlFor="saveAddress" className="ml-2 block text-sm text-text-secondary-light dark:text-text-secondary-dark">
-                Save this address for future orders
-              </label>
-            </div>
-          </form>
+        <div className="mt-16 flex justify-end">
+          <button onClick={() => navigate("/checkout/payment")} className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg rounded-md shadow-md">
+            Continue to Payment
+          </button>
         </div>
-      </div>
-
-      {/* Continue Button */}
-      <div className="mt-10 flex justify-end px-4">
-        <button
-          onClick={nextStep}
-          className="w-full sm:w-auto rounded-lg bg-primary px-8 py-3 text-base font-bold text-white shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          Continue to Payment
-        </button>
       </div>
     </div>
   );
 };
 
-export default AddressForm;
+export default AddressForm; // <-- YEH BHI ZAROORI THA!
