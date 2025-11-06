@@ -8,7 +8,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const res = await axios.get("http://192.168.29.133:5001/feature");
+        const res = await axios.get("http://192.168.29.133:5000/feature");
         setFeatured(res.data);
       } catch (err) {
         console.error("Error fetching featured products:", err);

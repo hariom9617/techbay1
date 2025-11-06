@@ -11,7 +11,7 @@ const Category = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get("http://192.168.29.133:5001/");
+        const res = await axios.get("http://192.168.29.133:5000/");
         console.log("API Response:", res.data);
 
         const data = Array.isArray(res.data)

@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+
 
 const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://192.168.29.133:5002/products");
+        const res = await axios.get("http://192.168.29.133:5000/products");
+       
         console.log("API Response:", res.data);
 
         if (Array.isArray(res.data)) {
@@ -82,7 +87,7 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
   });
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <div className="container mx-auto px-6 ">
       <h1 className="text-2xl font-semibold text-black-800 mb-6 text-center">
         All Products ({filteredProducts.length})
       </h1>
@@ -91,6 +96,7 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
         {filteredProducts.map((product) => (
           <div
             key={product._id}
+            onClick={() => navigate(`/product/${product._id}`)}   
             className="group relative flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-background-dark shadow-sm transition-all hover:shadow-lg"
           >
             <div className="p-4 bg-gray-100 flex items-center justify-center">
@@ -103,7 +109,7 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
 
             <div className="flex flex-col p-4 flex-grow">
               <h3 className="text-base font-bold text-[#111418] mb-1 truncate">
-                {product.title || "Unnamed Product"}
+                {product.name || "Unnamed Product"}
               </h3>
 
               <div className="flex items-center mb-2">

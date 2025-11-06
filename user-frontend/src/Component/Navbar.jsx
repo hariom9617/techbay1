@@ -5,16 +5,29 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
    const Navigate=useNavigate();
+   React.useEffect(() => {
+  const token = localStorage.getItem("access_token");
+  setIsLoggedIn(!!token);   // Convert to true/false safely
+}, []);
+
+
+
   return (
     <>
       <nav className="flex justify-between items-center px-4 sm:px-6 lg:px-10 py-4 bg-white shadow-md relative">
-        <div className="flex items-center gap-2 text-2xl font-bold text-gray-800">
+        <div className="flex items-center gap-2 text-2xl font-bold text-gray-800" 
+        onClick={()=>Navigate('/')} >
           <svg
+
             fill="none"
             viewBox="0 0 48 48"
             xmlns="http://www.w3.org/2000/svg"
@@ -51,9 +64,24 @@ const Navbar = () => {
               {item}
             </NavLink>
           ))}
-       <button className="px-5 py-1  text-center bg-blue-500 text-white rounded-2xl hover:underline cursor-pointer " 
-       onClick={()=>Navigate('/login')}>Sign In</button>
-        </div>
+      {!isLoggedIn && (
+    <button
+      className="px-5 py-1 bg-blue-500 text-white rounded-2xl hover:underline"
+      onClick={() => Navigate("/login")}
+    >
+      Sign In
+    </button>
+  )}
+
+  {/* If user IS logged in → show profile icon */}
+  {isLoggedIn && (
+    <AccountCircleIcon
+      onClick={() => Navigate("/profile")}
+      fontSize="large"
+      className="cursor-pointer text-gray-700 hover:text-blue-600"
+    />
+  )}
+  </div>   
 
         <div className="md:hidden">
           <button
@@ -93,7 +121,31 @@ const Navbar = () => {
             </NavLink>
           ))}
 
-         <button className="px-10 py-2  bg-blue-500 " > Sign In</button>
+       {!isLoggedIn && (
+  <button
+    className="px-10 py-2 bg-blue-500 text-white rounded"
+    onClick={() => {
+      setIsOpen(false);
+      Navigate("/login");
+    }}
+  >
+    Sign In
+  </button>
+)}
+
+{isLoggedIn && (
+  <div
+    className="flex items-center gap-3 cursor-pointer"
+    onClick={() => {
+      setIsOpen(false);
+      Navigate("/profile");
+    }}
+  >
+    <AccountCircleIcon fontSize="large" />
+    <span className="text-gray-800 font-medium">My Profile</span>
+  </div>
+)}
+
 
         </div>
       </div>

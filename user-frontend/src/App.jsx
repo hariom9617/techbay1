@@ -16,6 +16,8 @@ import AddressFormPage from "./Component/AddressForm";
 import PaymentFormPage from "./Component/PaymentForm";
 import OrderConfirmPage from "./Component/OrderConfirmationPage";
 import CheckoutPage from "./Pages/CheckoutPage";
+import PaymentForm from "./Component/PaymentForm";
+import SingleProductPage from "./Pages/SingleProductPage";
 
 const App = () => {
   return (
@@ -29,12 +31,15 @@ const App = () => {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/search" element={<Search />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/products/:id" element={<SingleProductPage />} />
+        
 
         {/* Checkout workflow */}
         <Route path="/checkout" element={<Navigate to="/checkout/address" replace />} />
         <Route path="/checkout/address" element={<AddressFormPage />} />
         <Route path="/checkout/payment" element={<PaymentFormPage />} />
         <Route path="/order-confirm" element={<OrderConfirmPage />} />
+        <Route path="/payment" element={<PaymentForm></PaymentForm>}/>
       </Routes>
     </BrowserRouter>
   );

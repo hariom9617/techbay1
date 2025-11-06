@@ -1,12 +1,30 @@
-import React from "react";
+//Wishlist
+
+
+import React, { useState } from "react";
 import Navbar from '../Component/Navbar'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const WishList = () => {
+  const nav =useNavigate()
+   const location = useLocation();         // current path
+
+  const currentPath = location.pathname;  
   return (
     
     <div className="container mx-auto p-2">
       <Navbar />
-      <div className="flex flex-wrap justify-between mt-10 gap-3">
+         <div className="mt-5 ml-5 "  >
+        <button onClick={()=>nav('/products')}
+          className={currentPath === "/products" ? "text-blue-500" : "text-black"}>Products</button>
+        /
+        <button onClick={()=>nav('/wishlist') }
+           className={currentPath === "/wishlist" ? "text-blue-500" : "text-black"}
+          >Wishlist</button>
+           </div>
+      <div className="flex flex-wrap justify-between mt-7 gap-3">
         <p className="text-[#1F2937] dark:text-black text-4xl pl-5 font-black leading-tight tracking-[-0.033em] min-w-72">
           My Wishlist
         </p>
@@ -48,7 +66,7 @@ const WishList = () => {
                 className="absolute top-3 right-3 h-8 w-8 flex items-center justify-center rounded-full bg-white/80 text-red-500 hover:bg-white transition-all"
                 title="Remove from Wishlist"
               >
-                <span className="material-symbols-outlined text-lg">favorite</span>
+                <span className=" text-lg"><FavoriteBorderIcon></FavoriteBorderIcon></span>
               </button>
             </div>
             <div className="flex flex-col gap-2 p-2">
