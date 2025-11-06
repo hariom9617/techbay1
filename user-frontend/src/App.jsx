@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-
+// Pages
 import Home from "./Pages/Home";
 import Cart from "./Pages/Cart";
 import Login from "./Pages/Login";
@@ -11,7 +11,7 @@ import Wishlist from "./Pages/WishList";
 import Search from "./Pages/Search";
 import Profile from "./Pages/Profile";
 
-
+// Components
 import AddressFormPage from "./Component/AddressForm";
 import PaymentFormPage from "./Component/PaymentForm";
 import OrderConfirmPage from "./Component/OrderConfirmationPage";
@@ -30,7 +30,7 @@ const App = () => {
         <Route path="/search" element={<Search />} />
         <Route path="/profile" element={<Profile />} />
 
-   
+        {/* Checkout workflow */}
         <Route path="/checkout" element={<Navigate to="/checkout/address" replace />} />
         <Route path="/checkout/address" element={<AddressFormPage />} />
         <Route path="/checkout/payment" element={<PaymentFormPage />} />

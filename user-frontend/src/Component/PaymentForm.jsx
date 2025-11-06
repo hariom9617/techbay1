@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const PaymentForm = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
-const navigate=useNavigate()
+
   return (
     <div className="font-display bg-background-light dark:bg-background-dark text-[#1F2937] dark:text-gray-200 min-h-screen flex flex-col overflow-x-hidden">
       {/* Header */}
@@ -303,7 +302,7 @@ const navigate=useNavigate()
                   </span>
                 </div>
 
-                <button className="w-full mt-8 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2" onClick={()=>{navigate("/order-confirm")}}>
+                <button className="w-full mt-8 bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">lock</span> Place
                   Order
                 </button>
