@@ -8,12 +8,11 @@ const ProductSidebar = () => {
   const [priceRange, setPriceRange] = useState([500, 50000]);
   const [selectedCategories, setSelectedCategories] = useState([]);
 
-  // Fetch all products once
+
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
         const res = await axios.get("http://192.168.29.133:5002/products");
-        // Handle both array and object responses
         const products = Array.isArray(res.data) ? res.data : res.data?.products || [];
         console.log("API Response:", { raw: res.data, processed: products });
         setAllProducts(products);
@@ -40,7 +39,7 @@ const ProductSidebar = () => {
 
   return (
     <div className="flex flex-row m-5">
-      {/* Sidebar */}
+    
       <div className="border border-gray-200 shadow-md w-64 p-5 rounded-lg bg-white">
         <div className="flex flex-row justify-between items-center mb-4">
           <h1 className="font-semibold text-gray-700">Filter By</h1>
@@ -55,7 +54,7 @@ const ProductSidebar = () => {
           </button>
         </div>
 
-        {/* Price Filter */}
+        
         <div className="mb-6">
           <h2 className="font-medium text-gray-800 mb-2">Price Range</h2>
           <Slider
@@ -75,7 +74,7 @@ const ProductSidebar = () => {
           </div>
         </div>
 
-        {/* Category Filter */}
+      
         <div className="mb-6">
           <h2 className="font-semibold text-gray-900 mb-2">Category</h2>
           {Array.from(new Set(allProducts.map(p => p.category || p.categoryName)))
@@ -95,7 +94,7 @@ const ProductSidebar = () => {
         </div>
       </div>
 
-      {/* Product List */}
+     
       <div className="flex-1 ml-5">
         <ProductsProduct
           allProducts={allProducts}

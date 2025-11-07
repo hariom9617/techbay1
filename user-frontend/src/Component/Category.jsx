@@ -35,7 +35,7 @@ const Category = () => {
   }, []);
 
   const handleCategoryClick = (category) => {
-    navigate("/products"); // redirects to product page
+    navigate("/products"); 
   };
 
   if (loading)

@@ -5,7 +5,7 @@ const PaymentForm = () => {
 
   return (
     <div className="font-display bg-background-light dark:bg-background-dark text-[#1F2937] dark:text-gray-200 min-h-screen flex flex-col overflow-x-hidden">
-      {/* Header */}
+      
       <header className="flex items-center justify-center whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-10 py-5">
         <div className="flex items-center gap-4">
           <div className="text-primary text-2xl">
@@ -27,10 +27,10 @@ const PaymentForm = () => {
         </div>
       </header>
 
-      {/* Main */}
+     
       <main className="flex flex-1 justify-center px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div className="w-full max-w-6xl">
-          {/* Steps */}
+         
           <div className="flex flex-col items-center justify-center mb-8">
             <div className="flex items-center gap-2 sm:gap-4 text-sm font-medium text-gray-500 dark:text-gray-400">
               <div className="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-full bg-gray-200 dark:bg-gray-700/50 px-4">
@@ -51,7 +51,7 @@ const PaymentForm = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Payment Details Column */}
+           
             <div className="flex flex-col">
               <div className="flex min-w-72 flex-col gap-2 mb-8">
                 <h1 className="text-[#1F2937] dark:text-white text-3xl sm:text-4xl font-black leading-tight tracking-[-0.033em]">
@@ -62,7 +62,7 @@ const PaymentForm = () => {
                 </p>
               </div>
 
-              {/* Radio List */}
+             
               <div className="flex flex-col gap-4">
                 <label
                   className={`flex cursor-pointer items-start gap-4 rounded-lg border-2 border-solid p-4 ${
@@ -102,7 +102,7 @@ const PaymentForm = () => {
                   </div>
                 </label>
 
-                {/* PayPal */}
+               
                 <label
                   className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 ${
                     paymentMethod === "paypal"
@@ -124,7 +124,7 @@ const PaymentForm = () => {
                   </div>
                 </label>
 
-                {/* Google Pay */}
+                
                 <label
                   className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 ${
                     paymentMethod === "gpay"
@@ -147,7 +147,7 @@ const PaymentForm = () => {
                 </label>
               </div>
 
-              {/* Credit Card Form */}
+              
               {paymentMethod === "card" && (
                 <div className="mt-8 flex flex-col gap-4 border-t border-gray-200 dark:border-gray-700 pt-8">
                   <label className="flex flex-col flex-1">
@@ -211,14 +211,14 @@ const PaymentForm = () => {
               )}
             </div>
 
-            {/* Order Summary Column */}
+           
             <div className="flex flex-col">
               <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 lg:p-8 sticky top-8">
                 <h2 className="text-xl font-bold text-[#1F2937] dark:text-white mb-6">
                   Order Summary
                 </h2>
                 <div className="space-y-4">
-                  {/* Product 1 */}
+                
                   <div className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4">
                       <div className="relative">
@@ -245,7 +245,7 @@ const PaymentForm = () => {
                     </p>
                   </div>
 
-                  {/* Product 2 */}
+            
                   <div className="flex justify-between items-center gap-4">
                     <div className="flex items-center gap-4">
                       <div className="relative">
@@ -271,7 +271,7 @@ const PaymentForm = () => {
                   </div>
                 </div>
 
-                {/* Summary */}
+               
                 <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-3 text-sm text-[#6B7280] dark:text-gray-400">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
@@ -319,7 +319,7 @@ const PaymentForm = () => {
         </div>
       </main>
 
-      {/* Footer */}
+
       <footer className="w-full mt-12 py-8 border-t border-gray-200 dark:border-gray-700">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-sm text-[#6B7280] dark:text-gray-400">
           <p>© 2024 Techbay. All rights reserved.</p>

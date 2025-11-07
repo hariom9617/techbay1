@@ -16,10 +16,12 @@ import AddressFormPage from "./Component/AddressForm";
 import PaymentFormPage from "./Component/PaymentForm";
 import OrderConfirmPage from "./Component/OrderConfirmationPage";
 import CheckoutPage from "./Pages/CheckoutPage";
+import { AddressProvider } from "./Context/AddressContext";
 
 const App = () => {
   return (
     <BrowserRouter>
+    <AddressProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
@@ -36,6 +38,7 @@ const App = () => {
         <Route path="/checkout/payment" element={<PaymentFormPage />} />
         <Route path="/order-confirm" element={<OrderConfirmPage />} />
       </Routes>
+      </AddressProvider>
     </BrowserRouter>
   );
 };

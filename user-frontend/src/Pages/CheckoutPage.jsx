@@ -5,10 +5,10 @@ import AddressForm from "../Component/AddressForm";
 const CheckoutPage = () => {
   const navigate = useNavigate();
 
-  // State for the address form
+
   const [addressData, setAddressData] = useState({});
 
-  // Function to go to payment
+  
   const handleNext = () => {
     navigate("/checkout/payment");
   };

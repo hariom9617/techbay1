@@ -35,7 +35,7 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
   if (error)
     return <div className="text-center text-red-600 mt-10">Error: {error}</div>;
 
-  // Helper to extract possible string values for a set of keys from a product
+  
   const getFieldStrings = (product, keys) => {
     const out = [];
     keys.forEach((key) => {
@@ -57,9 +57,9 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
     return out.map((s) => s.trim()).filter(Boolean);
   };
 
-  // Apply client-side filters
+ 
   const filteredProducts = products.filter((product) => {
-    // Price filter
+    
     const price = Number(product.price ?? product.amount ?? 0);
     const minPrice = Number(priceRange?.[0] ?? 0);
     const maxPrice = Number(priceRange?.[1] ?? Infinity);
@@ -67,7 +67,6 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
     if (isFinite(minPrice) && price < minPrice) return false;
     if (isFinite(maxPrice) && price > maxPrice) return false;
 
-    // Category filter (supports strings, arrays and objects)
     if (selectedCategories && selectedCategories.length > 0) {
       const prodCats = getFieldStrings(product, ['category','categories','categoryName','type']);
       const prodCatsLower = prodCats.map((c) => c.toLowerCase());

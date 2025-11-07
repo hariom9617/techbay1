@@ -38,7 +38,7 @@ const Cart = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
+            {/* LEFT: Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               <div className="bg-white dark:bg-background-dark rounded-lg shadow-sm">
                 {cart.map((item) => (
@@ -85,7 +85,7 @@ const Cart = () => {
               </Link>
             </div>
 
-            {/* Order Summary */}
+            {/* RIGHT: Order Summary */}
             <div className="bg-white dark:bg-background-dark rounded-lg shadow-sm p-6 h-fit">
               <h2 className="text-xl font-bold border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
                 Order Summary
@@ -108,9 +108,11 @@ const Cart = () => {
                 <span>Order Total</span>
                 <span>$3090.52</span>
               </div>
+
+              {/* PROCEED TO CHECKOUT */}
               <button
-                className="w-full mt-6 h-12 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700"
-                onClick={() => navigate("/checkout")}
+                className="w-full mt-6 h-12 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 transition"
+                onClick={() => navigate("/checkout/address")}
               >
                 Proceed to Checkout
               </button>
