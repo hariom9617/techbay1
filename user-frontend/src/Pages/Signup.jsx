@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const API_BASE = "http://192.168.29.133:5000";
+const API_BASE = "http://192.168.29.133:5000/signup";
 
 export default function Signup() {
   const navigate = useNavigate();
