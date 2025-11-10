@@ -12,10 +12,10 @@ const Products = () => {
 
       <Navbar></Navbar>
       <div className='"mx-4  sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32'>
-      <div>
-        <button onClick={()=>nav('/')}>Home</button>
+      <div className='ml-2 mt-5'>
+        <button className='px-2' onClick={()=>nav('/')}>Home</button>
         /
-        <button onClick={()=>nav('/products') }>Products</button>
+        <button className='px-2' onClick={()=>nav('/products') }>Products</button>
            </div>
       <div  className='mx-4 my-3 font-extrabold text-3xl flex items-start '>Explore Our Products</div>
       <div className='mx-4 text-gray-700' >Find the best electronics from top brand</div>

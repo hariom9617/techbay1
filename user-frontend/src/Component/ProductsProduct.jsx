@@ -82,7 +82,7 @@ const ProductsProduct = ({ selectedCategories = [], priceRange = [0, Infinity] }
   });
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <div className="container mx-auto px-4 ">
       <h1 className="text-2xl font-semibold text-black-800 mb-6 text-center">
         All Products ({filteredProducts.length})
       </h1>

@@ -12,7 +12,7 @@ const ProductSidebar = () => {
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
-        const res = await axios.get("http://192.168.29.133:5002/products");
+        const res = await axios.get("http://192.168.29.133:5000/products");
         // Handle both array and object responses
         const products = Array.isArray(res.data) ? res.data : res.data?.products || [];
         console.log("API Response:", { raw: res.data, processed: products });
@@ -47,7 +47,7 @@ const ProductSidebar = () => {
           <button
             className="text-blue-600 text-sm hover:underline"
             onClick={() => {
-              setPriceRange([500, 50000]);
+              setPriceRange([0, 50000]);
               setSelectedCategories([]);
             }}
           >

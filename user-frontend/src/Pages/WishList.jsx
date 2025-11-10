@@ -1,14 +1,32 @@
-import React from "react";
-import Navbar from '../Component/Navbar'
+import React, { useEffect } from "react";
+import Navbar from "../Component/Navbar";
+import { useAuth } from "../Context/authcontext/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const WishList = () => {
+  const { user, token, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !token) {
+      navigate("/login");
+    }
+  }, [loading, token, navigate]);
+
+  if (loading) {
+    return <div className="text-center mt-10">Loading...</div>;
+  }
+
+  if (!token) {
+    return null; // navigation will redirect
+  }
+
   return (
-    
     <div className="container mx-auto p-2">
       <Navbar />
       <div className="flex flex-wrap justify-between mt-10 gap-3">
         <p className="text-[#1F2937] dark:text-black text-4xl pl-5 font-black leading-tight tracking-[-0.033em] min-w-72">
-          My Wishlist
+          My Wishlist {user ? `(${user.name || user.username})` : ""}
         </p>
       </div>
 
@@ -48,11 +66,15 @@ const WishList = () => {
                 className="absolute top-3 right-3 h-8 w-8 flex items-center justify-center rounded-full bg-white/80 text-red-500 hover:bg-white transition-all"
                 title="Remove from Wishlist"
               >
-                <span className="material-symbols-outlined text-lg">favorite</span>
+                <span className="material-symbols-outlined text-lg">
+                  favorite
+                </span>
               </button>
             </div>
             <div className="flex flex-col gap-2 p-2">
-              <p className="text-gray-800 font-semibold truncate">{item.name}</p>
+              <p className="text-gray-800 font-semibold truncate">
+                {item.name}
+              </p>
               <p className="text-gray-500 text-sm">{item.price}</p>
               <button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold py-2 rounded-lg">
                 Add to Cart
